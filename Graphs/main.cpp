@@ -18,7 +18,7 @@ void debugprint(bool* matrix, int d) {
 
 	std::cout << std::endl << std::endl;
 }
-
+/*
 bool LookForCycle(int d, bool* matrix) {
 
 	int* temp = (int*)malloc(d * sizeof(int));
@@ -54,7 +54,7 @@ bool LookForCycle(int d, bool* matrix) {
 	free(temp);
 	return false;
 
-}
+}*/
 
 bool GetSingleAnswer(int d, int d2, int sum, int max, bool* matrix) {
 
@@ -89,8 +89,9 @@ bool GetSingleAnswer(int d, int d2, int sum, int max, bool* matrix) {
 }
 
 bool GetAnswer(int d, std::string input, bool* t, bool* matrix) {
-
-	bool answer = true;
+	
+	int dmax = 0;
+	bool answer = false;
 
 	std::vector<int> queue;
 
@@ -113,8 +114,8 @@ bool GetAnswer(int d, std::string input, bool* t, bool* matrix) {
 		int max = 0;
 
 		queue.push_back(i);
-		matrix[i] = true;
-		t[i * d + i] = true;
+		matrix[i * d + i] = true;
+		t[i] = true;
 
 		while (queue.empty() == false) {
 
@@ -122,7 +123,7 @@ bool GetAnswer(int d, std::string input, bool* t, bool* matrix) {
 
 			int m = queue[queue.size() - 1];
 			queue.pop_back();
-			
+
 			for (int j = 0; j < d; j++) {
 
 				if (j == m) {
@@ -141,7 +142,6 @@ bool GetAnswer(int d, std::string input, bool* t, bool* matrix) {
 					matrix[j * d + m] = true;
 					temp++;
 					sum++;
-
 				}
 			}
 
@@ -151,7 +151,15 @@ bool GetAnswer(int d, std::string input, bool* t, bool* matrix) {
 
 		}
 
-		answer = answer && GetSingleAnswer(d, d2, sum, max, matrix);
+		if (max > dmax) {
+			dmax = max;
+			debugprint(matrix, d);
+			answer = false;
+			answer = answer || GetSingleAnswer(d, d2, sum, max, matrix);
+		}
+		else if (max == dmax) {
+			answer = answer || GetSingleAnswer(d, d2, sum, max, matrix);
+		}
 
 	}
 
